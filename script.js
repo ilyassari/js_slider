@@ -48,6 +48,13 @@ var models = [
 
 var index = 0;
 var slideCount = models.length;
+var interval;
+var settings = {
+  duration : '1000',
+  random : true
+};
+
+init(settings);
 
 document.querySelector('.fa-arrow-circle-left').addEventListener('click',function(){
   if (index === 0){ index = slideCount-1;}
@@ -60,6 +67,42 @@ document.querySelector('.fa-arrow-circle-right').addEventListener('click',functi
   else { index++; }
   showSlide(index);
 });
+
+document.querySelectorAll('.arrow').forEach(function(item){
+  item.addEventListener('mouseenter',function(){
+    clearInterval(interval);
+  })
+});
+
+document.querySelectorAll('.arrow').forEach(function(item){
+  item.addEventListener('mouseleave',function(){
+    init(settings);
+  })
+});
+
+
+function init(settings){
+  var prev;
+  interval = setInterval(function(){
+    if(settings.random){
+      // random
+      do{
+        index = Math.floor(Math.random()*slideCount);
+      }while(index == prev)
+      prev = index;
+    }else{
+      // in sequence
+      if(slideCount == index+1){
+        index = 0
+      }
+      showSlide(index);
+      index++;
+    }
+    showSlide(index);
+  },settings.duration)
+}
+
+
 
 function showSlide(index){
   document.querySelector('.card-img-top').setAttribute('src',models[index].image);
